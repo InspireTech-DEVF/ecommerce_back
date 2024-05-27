@@ -1,5 +1,7 @@
 import { connect } from "./config/database.js";
 import express from "express";
+import itemRouters from "./routes/itemRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -9,6 +11,8 @@ const api = express();
 api.use(express.json());
 
 // Aqui van las rutas
+api.use("/api/v1/items",itemRouters);
+api.use("/api/v1/categories",categoryRoutes);
 
 api.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT} 🚀`);
