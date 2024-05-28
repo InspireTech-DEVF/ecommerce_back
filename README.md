@@ -49,6 +49,7 @@ USER
 REGISTER
 
 POST ---> /register ------------------------Registrar un usuario------------------------------
+
     {
         "email": "example@gmail.com",
         "password": "examplepwd",
@@ -60,6 +61,7 @@ POST ---> /register ------------------------Registrar un usuario----------------
 Formato para registrar a un usuario
 
 POST ---> /login ------------------------Inicio de sesión------------------------------
+
     {
         "email": "example@gmail.com",
         "password": "examplepwd"
