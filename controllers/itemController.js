@@ -30,7 +30,12 @@ const createItem = async (req, res) => {
 };
 
 const getAllItems = async (req, res) => {
+  const { category_id } = req.query;
   const queryDb = { isActive: true };
+
+  if (category_id) {
+    queryDb.category_id = category_id; // Agregar el filtro de category_id a la consulta
+  }
 
   try {
     const items = await Item.find(queryDb).populate("category_id", "name"); // busque el documento en la colección de categorías que corresponde a category_id y solo incluya el campo name.
