@@ -43,3 +43,37 @@ GETONEITEM
 
 GET ---> /items/:id ------------------------Devuelve un solo item de acuerdo al id proporcionado------------------------------
 
+
+USER
+
+REGISTER
+
+POST ---> /register ------------------------Registrar un usuario------------------------------
+    {
+        "email": "example@gmail.com",
+        "password": "examplepwd",
+        "name": "John",
+        "last_name": "Doe",
+        "role": ADMIN,
+        "isActive": true,
+    }
+Formato para registrar a un usuario
+
+POST ---> /login ------------------------Inicio de sesión------------------------------
+    {
+        "email": "example@gmail.com",
+        "password": "examplepwd"
+    }
+
+GET ---> /users ------------------------Obtener lista de todos los usuarios registrados------------------------------
+
+Debe haberse iniciado sesión como ADMIN y enviar el token en la cabecera de la petición para obtener la lista
+
+GET ---> /clients ------------------------Obtener lista de todos los usuarios registrados como clientes------------------------------
+
+Debe haberse iniciado sesión como ADMIN y enviar el token en la cabecera de la petición para obtener la lista
+
+
+
+
+
