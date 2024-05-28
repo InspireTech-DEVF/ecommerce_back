@@ -31,17 +31,17 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
     try {
       if (!req.body.email || !req.body.password) {
-        return res.status(400).json({ message: 'user email or pwd are required' })
-      }
-      const user = await User.findOne({ userName: req.body.userName })
+        return res.status(400).json({ message: 'Email and password are required' })
+    }
+      const user = await User.findOne({ userName: req.body.email })
   
       if (!user) {
-        return res.status(400).json({ message: 'user or pwd error' })
-      }
+        return res.status(400).json({ message: 'Invalid email or password' })
+    }
       const isPwdValid = await bcrypt.compare(req.body.password, user.password)
       if (!isPwdValid) {
-        return res.status(401).json({ message: 'User or pwd error' })
-      }
+        return res.status(401).json({ message: 'Invalid email or password' })
+    }
   
       const payload = {
         id: user._id,
@@ -53,11 +53,11 @@ const login = async (req, res) => {
       const token = jwt.encode(payload, process.env.SECRET)
   
       return res.status(200).json({
-        msg: 'Login Success',
+        msg: 'Login successful',
         token
       })
     } catch (error) {
-      return res.status(400).json({ message: `error creating:${error.message}` })
+        return res.status(400).json({ message: `Error logging in: ${error.message}` })
     }
   }
 
@@ -65,7 +65,7 @@ const login = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
       const users = await User.find({ isActive: true })
-      if (!users) {
+      if (!users || users.length === 0) {
         return res.status(404).json({ msg: 'No active users found' })
       }
       res.status(200).json(users)
@@ -79,7 +79,7 @@ const getAllUsers = async (req, res) => {
 const getClients = async (req, res) => {
     try {
       const clients = await User.find({ role: 'CUSTOMER' })
-      if (!clients) {
+      if (!clients || clients.length === 0) {
         return res.status(404).json({ msg: 'No active clients found' })
       }
       res.status(200).json(clients)
