@@ -1,14 +1,43 @@
 import mongoose from 'mongoose'
 
-//Esquema
+// Esquema
 const userSchema = new mongoose.Schema({
-  email: { type: String, unique: true, required: true, match: /.+\@.+\..+/ },
-    password: {type:String, unique:true, required:true},
-    name:{type:String, required:true},
-    last_name:{type:String, required:true},
-  }, { timestamps: true }) 
-  
+  email: { 
+    type: String, 
+    unique: true, 
+    required: true, 
+    match: /.+\@.+\..+/ 
+  },
+  password: {
+    type: String, 
+    required: true,
+    minlength: 8 
+  },
+  name: {
+    type: String, 
+    required: true 
+  },
+  last_name: {
+    type: String, 
+    required: true 
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: ['ADMIN', 'CUSTOMER'],
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, { 
+  timestamps: true 
+}) 
 
-  const User = mongoose.model('User', userSchema)
-  
-  export default User
+// Índices para mejorar el rendimiento de las búsquedas
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1 });
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
