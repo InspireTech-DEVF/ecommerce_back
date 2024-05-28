@@ -1,5 +1,6 @@
 import { connect } from "./config/database.js";
 import express from "express";
+import cors from "cors";
 import itemRouters from "./routes/itemRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 
@@ -9,6 +10,7 @@ connect();
 
 const api = express();
 api.use(express.json());
+api.use(cors());
 
 // Aqui van las rutas
 api.use("/api/v1/items",itemRouters);
