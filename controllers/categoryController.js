@@ -9,7 +9,7 @@ const createCategory = async (req, res) => {
     }
 
     const newCategory = await Category.create(CategoryData);
-    res.status(200).json(newCategory);
+    res.status(201).json(newCategory);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

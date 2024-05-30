@@ -23,7 +23,7 @@ const createItem = async (req, res) => {
     const responseItem = newItem.toObject();
     responseItem.category_name = category.name;
 
-    res.status(200).json(responseItem);
+    res.status(201).json(responseItem);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
