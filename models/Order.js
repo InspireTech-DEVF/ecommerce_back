@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-  cart_id: [{
+  cart_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Cart",
     required: true
-  }],
+  },
   total: { 
     type: Number, 
     required: true 
