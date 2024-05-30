@@ -6,7 +6,6 @@ cartSchema.pre('save', function(next) {
   next()
 })
 
-// Modifica el esquema para incluir sumTotal
 const cartSchema = new mongoose.Schema({
   user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
   item_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true},
