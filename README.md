@@ -68,46 +68,46 @@ GETALLORDERS ---> /orders ------------------------
 
     Método: GET
 
-De esta manera tendria que verse la respusta de la petición:
+De esta manera tendria que verse la respuesta de la petición:
 
-[
+
   {
-    "_id": "60c72c1f9f1b2c001cf0e9f9",
-    "cart_id": {
-      "_id": "60c72b1f9f1b2c001cf0e9f8",
-      "user_id": "60c72b1f9f1b2c001cf0e9f7",
-      "item_id": "60c72b1f9f1b2c001cf0e9f6",
-      "quantity": 2,
-      "unitPrice": 50,
-      "sumTotal": 100,
-      "isActive": true,
-      "__v": 0
+        "_id": "60c72c1f9f1b2c001cf0e9f9",
+        "cart_id": {
+          "_id": "60c72b1f9f1b2c001cf0e9f8",
+          "user_id": "60c72b1f9f1b2c001cf0e9f7",
+          "item_id": "60c72b1f9f1b2c001cf0e9f6",
+          "quantity": 2,
+          "unitPrice": 50,
+          "sumTotal": 100,
+          "isActive": true,
+          "__v": 0
     },
-    "total": 100,
-    "isActive": true,
-    "createdAt": "2021-06-14T08:29:19.351Z",
-    "updatedAt": "2021-06-14T08:29:19.351Z",
-    "__v": 0
+        "total": 100,
+        "isActive": true,
+        "createdAt": "2021-06-14T08:29:19.351Z",
+        "updatedAt": "2021-06-14T08:29:19.351Z",
+        "__v": 0
   },
   {
-    "_id": "60c72d1f9f1b2c001cf0e9fa",
-    "cart_id": {
-      "_id": "60c72d1f9f1b2c001cf0e9f8",
-      "user_id": "60c72d1f9f1b2c001cf0e9f7",
-      "item_id": "60c72d1f9f1b2c001cf0e9f6",
-      "quantity": 1,
-      "unitPrice": 100,
-      "sumTotal": 100,
-      "isActive": true,
-      "__v": 0
+        "_id": "60c72d1f9f1b2c001cf0e9fa",
+        "cart_id": {
+            "_id": "60c72d1f9f1b2c001cf0e9f8",
+          "user_id": "60c72d1f9f1b2c001cf0e9f7",
+          "item_id": "60c72d1f9f1b2c001cf0e9f6",
+          "quantity": 1,
+          "unitPrice": 100,
+          "sumTotal": 100,
+          "isActive": true,
+          "__v": 0
     },
-    "total": 100,
-    "isActive": true,
-    "createdAt": "2021-06-14T08:30:19.351Z",
-    "updatedAt": "2021-06-14T08:30:19.351Z",
-    "__v": 0
+        "total": 100,
+        "isActive": true,
+        "createdAt": "2021-06-14T08:30:19.351Z",
+        "updatedAt": "2021-06-14T08:30:19.351Z",
+        "__v": 0
   }
-]
+
 
 
 
@@ -116,24 +116,24 @@ GETORDERBYID ---> /orders/:id ------------------------
 
     La respuesta de la peticion seria:
 
-    {
-        "_id": "60c72c1f9f1b2c001cf0e9f9",
-        "cart_id": {
-        "_id": "60c72b1f9f1b2c001cf0e9f8",
-        "user_id": "60c72b1f9f1b2c001cf0e9f7",
-        "item_id": "60c72b1f9f1b2c001cf0e9f6",
-        "quantity": 2,
-        "unitPrice": 50,
-        "sumTotal": 100,
-        "isActive": true,
-        "__v": 0
-    },
-        "total": 100,
-        "isActive": true,
-        "createdAt": "2021-06-14T08:29:19.351Z",
-        "updatedAt": "2021-06-14T08:29:19.351Z",
-        "__v": 0
-    }
+        {
+            "_id": "60c72c1f9f1b2c001cf0e9f9",
+            "cart_id": {
+            "_id": "60c72b1f9f1b2c001cf0e9f8",
+            "user_id": "60c72b1f9f1b2c001cf0e9f7",
+            "item_id": "60c72b1f9f1b2c001cf0e9f6",
+            "quantity": 2,
+            "unitPrice": 50,
+            "sumTotal": 100,
+            "isActive": true,
+            "__v": 0
+        },
+            "total": 100,
+            "isActive": true,
+            "createdAt": "2021-06-14T08:29:19.351Z",
+            "updatedAt": "2021-06-14T08:29:19.351Z",
+            "__v": 0
+        }
 
 
 USER
@@ -147,7 +147,7 @@ POST ---> /register ------------------------Registrar un usuario----------------
         "password": "examplepwd",
         "name": "John",
         "last_name": "Doe",
-        "role": ADMIN,
+        "role": "ADMIN",
         "isActive": true,
     }
 Formato para registrar a un usuario
