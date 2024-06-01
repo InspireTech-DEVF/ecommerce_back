@@ -82,7 +82,7 @@ const deleteCategoryById = async function (req, res) {
     if (!category || category.isActive === false) {
       return res.status(404).json({ msg: "Category not found" });
     }
-    res.status(204).json();
+    res.status(204).json({msg: "Category deleted"});
   } catch (error) {
     res.status(400).json({ error: err.message });
   }

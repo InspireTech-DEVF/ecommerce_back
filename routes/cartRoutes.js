@@ -8,7 +8,7 @@ const cartRoutes = express.Router()
 cartRoutes.post('/', isAuth, addItem)
 cartRoutes.get('/', isAuth, getCartItems)
 cartRoutes.patch('/:itemId', isAuth, editCartItem)
-cartRoutes.delete('/', isAuth, deleteCart)
+cartRoutes.patch('/', isAuth, deleteCart)
 //cartRoutes.patch('/:cartId', isAuth, updateItemByIdCart) 
 cartRoutes.get('/getCartTotal', isAuth, getCartTotal)
 

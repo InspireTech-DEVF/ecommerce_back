@@ -31,6 +31,15 @@ const addItem = async (req, res) => {
         // Asignar el ID del usuario al artículo del carrito
         cartItem.user_id = userId;
 
+        //ID del producto
+        const item = await Item.findById(cartItem.item_id)
+        if(!item){
+            return res.status(404).json({ msg: "Item not found" });
+        }
+        
+        // Asignar el ID del usuario al artículo del carrito
+        cartItem.item_id = item.item_id
+
         // Crear el producto en el carrito
         const newItem = await Cart.create(cartItem);
         res.status(201).json(newItem);
@@ -43,6 +52,7 @@ const addItem = async (req, res) => {
 // GET para ver los productos en el carrito
 const getCartItems = async (req, res) => {
     try {
+        //Validar información del usuario
         const authHeader = req.headers.authorization;
         if (!authHeader) {
             return res.status(400).json({ message: 'Authorization header is missing' });
@@ -56,11 +66,13 @@ const getCartItems = async (req, res) => {
         const payload = jwt.decode(token, process.env.SECRET);
         const userId = payload.id;
 
+        //Buscar los productos que coincidan con el usuario en sesión
         const items = await Cart.find({ user_id: userId }).populate('item_id');
         if (!items || items.length === 0) {
             return res.status(404).json({ msg: 'No cart data found' });
         }
 
+        //Respuesta con los productos con el Id del usuario y el Id del Producto
         res.status(200).json(items);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -70,6 +82,22 @@ const getCartItems = async (req, res) => {
 // PATCH para editar información en un producto del carrito
 const editCartItem = async (req, res) => {
     try {
+
+        //Validar información del usuario
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(400).json({ message: 'Authorization header is missing' });
+        }
+    
+        const [bearer, token] = authHeader.split(' ');
+        if (bearer !== 'Bearer' || !token) {
+                return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
+            }
+    
+        //const payload = jwt.decode(token, process.env.SECRET);
+        //const userId = payload.id;
+
+        
         const { itemId } = req.params;
         const updates = req.body;
 
@@ -84,7 +112,7 @@ const editCartItem = async (req, res) => {
     }
 };
 
-// DELETE para vaciar el carrito
+// PATCH para vaciar el carrito
 const deleteCart = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -100,7 +128,12 @@ const deleteCart = async (req, res) => {
         const payload = jwt.decode(token, process.env.SECRET);
         const userId = payload.id;
 
-        await Cart.deleteMany({ user_id: userId });
+        //await Cart.deleteMany({ user_id: userId });
+        const category = await Cart.findByIdAndUpdate(
+            req.params.user_id,
+            { isActive: false },
+            { new: false }
+          );
         res.status(200).json({ msg: 'Cart has been emptied' });
     } catch (error) {
         res.status(400).json({ error: error.message });
