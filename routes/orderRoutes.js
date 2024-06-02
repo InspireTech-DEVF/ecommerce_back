@@ -11,4 +11,4 @@ orderRoutes.post("/", createOrderRoute);
 orderRoutes.get("/", getAllOrdersRoute);
 orderRoutes.get("/:orderId", getOrderRoute);
 
-export default { orderRoutes };
+export default orderRoutes;
