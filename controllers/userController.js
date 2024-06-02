@@ -36,11 +36,11 @@ const login = async (req, res) => {
       const user = await User.findOne({ email: req.body.email })
   
       if (!user) {
-        return res.status(400).json({ message: 'Invalid email' })
+        return res.status(400).json({ message: 'Invalid email or password' })
     }
       const isPwdValid = await bcrypt.compare(req.body.password, user.password)
       if (!isPwdValid) {
-        return res.status(401).json({ message: 'Invalid password' })
+        return res.status(401).json({ message: 'Invalid email or password' })
     }
   
       const payload = {

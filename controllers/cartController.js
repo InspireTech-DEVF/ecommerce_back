@@ -80,7 +80,7 @@ const getCartItems = async (req, res) => {
 };
 
 // PATCH para editar información en un producto del carrito
-const editCartItem = async (req, res) => {
+const updateCartItemById = async (req, res) => {
     try {
 
         //Validar información del usuario
@@ -99,6 +99,15 @@ const editCartItem = async (req, res) => {
 
         
         const { itemId } = req.params;
+        //Validar existencia del item en la base de datos
+        if (
+            !itemId ||
+            typeof itemId !== "string" ||
+            !itemId.match(/^[0-9a-fA-F]{24}$/)
+          ) {
+            return res.status(400).json({ msg: "Invalid item ID" });
+          }
+
         const updates = req.body;
 
         const updatedItem = await Cart.findByIdAndUpdate(itemId, updates, { new: true });
@@ -125,15 +134,18 @@ const deleteCart = async (req, res) => {
             return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
         }
 
-        const payload = jwt.decode(token, process.env.SECRET);
-        const userId = payload.id;
 
         //await Cart.deleteMany({ user_id: userId });
-        const category = await Cart.findByIdAndUpdate(
-            req.params.user_id,
+        const emptied = await Cart.findByIdAndUpdate(
+            //req.params.user_id,
+            //El id del mismo carrito se setea en falso para que el usuario pueda tener otro carrito después?
+            _id,
             { isActive: false },
             { new: false }
           );
+          if(!emptied){
+            return res.status(404).json({ msg: "Cart not found" });
+          }
         res.status(200).json({ msg: 'Cart has been emptied' });
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -141,7 +153,7 @@ const deleteCart = async (req, res) => {
 };
 
 // DELETE o PATCH BY ID para eliminar un producto
-const updateItemByIdCart = async (req, res) => {
+const deleteItemByIdCart = async (req, res) => {
     try {
         const { itemId } = req.params;
 
@@ -202,8 +214,8 @@ const getCartTotal = async (req, res) => {
 export {
     addItem,
     getCartItems,
-    editCartItem,
+    updateCartItemById,
     deleteCart,
-    updateItemByIdCart,
+    deleteItemByIdCart,
     getCartTotal
 };

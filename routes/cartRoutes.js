@@ -1,15 +1,15 @@
 import express from 'express'
 import { isAuth } from '../middlewares/isAuth.js'
-import { addItem,getCartItems, editCartItem, deleteCart,updateItemByIdCart,getCartTotal } from '../controllers/cartController.js'
+import { addItem,getCartItems, updateCartItemById, deleteCart,deleteItemByIdCart,getCartTotal } from '../controllers/cartController.js'
 
 
 const cartRoutes = express.Router()
 
 cartRoutes.post('/', isAuth, addItem)
 cartRoutes.get('/', isAuth, getCartItems)
-cartRoutes.patch('/:itemId', isAuth, editCartItem)
+cartRoutes.patch('/:itemId', isAuth, updateCartItemById)
 cartRoutes.patch('/', isAuth, deleteCart)
-//cartRoutes.patch('/:cartId', isAuth, updateItemByIdCart) 
-cartRoutes.get('/getCartTotal', isAuth, getCartTotal)
+cartRoutes.delete('/:cartId', isAuth, deleteItemByIdCart) 
+cartRoutes.get('/total', isAuth, getCartTotal)
 
 export default cartRoutes
