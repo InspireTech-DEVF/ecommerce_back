@@ -138,7 +138,7 @@ const deleteItemId = async (req, res) => {
     }
     res.status(204).json();
   } catch (error) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: error.message });
   }
 };
 

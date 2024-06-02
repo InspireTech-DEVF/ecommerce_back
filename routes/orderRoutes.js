@@ -3,7 +3,7 @@ import {
   createOrderRoute,
   getAllOrdersRoute,
   getOrderRoute,
-} from "../controllers/orderController";
+} from "../controllers/orderController.js";
 
 const orderRoutes = express.Router();
 
