@@ -33,7 +33,7 @@ const login = async (req, res) => {
       if (!req.body.email || !req.body.password) {
         return res.status(400).json({ message: 'Email and password are required' })
     }
-      const user = await User.findOne({ userName: req.body.email })
+      const user = await User.findOne({ email: req.body.email })
   
       if (!user) {
         return res.status(400).json({ message: 'Invalid email or password' })
