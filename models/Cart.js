@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
-
+/* 
 
 cartSchema.pre('save', function(next) {
   this.sumTotal = this.quantity * this.unitPrice
   next()
-})
+}) */
 
 const cartSchema = new mongoose.Schema({
   user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},

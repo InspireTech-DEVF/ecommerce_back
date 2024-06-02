@@ -7,7 +7,7 @@ const userRoutes = express.Router()
 
 userRoutes.post('/register', createUser)
 userRoutes.post('/login', login)
-userRoutes.get('/users', isAuth, isAdmin, getAllUsers)
+userRoutes.get('/', isAuth, isAdmin, getAllUsers)
 userRoutes.get('/clients', isAuth, isAdmin, getClients)
 
 export default userRoutes
