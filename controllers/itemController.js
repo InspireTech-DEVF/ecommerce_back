@@ -30,11 +30,15 @@ const createItem = async (req, res) => {
 };
 
 const getAllItems = async (req, res) => {
-  const { category_id } = req.query;
+  const { category_id, search } = req.query;
   const queryDb = { isActive: true };
 
   if (category_id) {
     queryDb.category_id = category_id; // Agregar el filtro de category_id a la consulta
+  }
+
+  if (search) {
+    queryDb.name = { $regex: search, $options: "i" }; // Filtro de búsqueda parcial case-insensitive en el nombre
   }
 
   try {
