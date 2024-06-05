@@ -152,6 +152,8 @@ POST ---> /register ------------------------Registrar un usuario----------------
     }
 Formato para registrar a un usuario
 
+LOGIN
+
 POST ---> /login ------------------------Inicio de sesión------------------------------
 
     {
@@ -159,13 +161,51 @@ POST ---> /login ------------------------Inicio de sesión----------------------
         "password": "examplepwd"
     }
 
-GET ---> /users ------------------------Obtener lista de todos los usuarios registrados------------------------------
+
+GET ---> / ------------------------Obtener lista de todos los usuarios registrados------------------------------
 
 Debe haberse iniciado sesión como ADMIN y enviar el token en la cabecera de la petición para obtener la lista
+
+CLIENTS
 
 GET ---> /clients ------------------------Obtener lista de todos los usuarios registrados como clientes------------------------------
 
 Debe haberse iniciado sesión como ADMIN y enviar el token en la cabecera de la petición para obtener la lista
+
+ME
+
+GET ---> /me ------------------------Obtener el usuario que está en sesión actualmente------------------------------
+Debe haberse iniciado sesión y enviar el token en la cabecera 
+
+
+CART
+
+ADD ITEM
+
+POST ---> / ------------------------Agregar un item al carrito------------------------------
+Debe haberse iniciado sesión y enviar el token en la cabecera 
+
+GET CART ITEMS
+
+GET ---> / ------------------------Obtener los items del carrito------------------------------
+Debe haberse iniciado sesión y enviar el token en la cabecera 
+
+UPDATE CART ITEM BY ID
+
+PATCH ---> /:itemId ------------------------Editar un item del carrito------------------------------
+Debe haberse iniciado sesión y enviar el token en la cabecera 
+
+DELETE CART
+PATCH ---> / ------------------------Vacía el carrito actual------------------------------
+Debe haberse iniciado sesión y enviar el token en la cabecera 
+
+
+
+
+
+
+
+
 
 
 
