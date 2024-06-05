@@ -9,7 +9,7 @@ cartRoutes.post('/', isAuth, addItem)
 cartRoutes.get('/', isAuth, getCartItems)
 cartRoutes.patch('/:itemId', isAuth, updateCartItemById)
 cartRoutes.patch('/', isAuth, deleteCart)
-cartRoutes.delete('/:cartId', isAuth, deleteItemByIdCart) 
+cartRoutes.patch('/:cartId', isAuth, deleteItemByIdCart) 
 cartRoutes.get('/total', isAuth, getCartTotal)
 
 export default cartRoutes
