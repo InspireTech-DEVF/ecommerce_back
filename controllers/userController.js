@@ -88,9 +88,38 @@ const getClients = async (req, res) => {
     }
   }
   
+  //Read para ver mi usuario 
+  const getMyUser =async (req,res) => {
+    try{
+
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+          return res.status(400).json({ message: 'Authorization header is missing' });
+      }
+
+      const [bearer, token] = authHeader.split(' ');
+      if (bearer !== 'Bearer' || !token) {
+          return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
+      }
+
+      const payload = jwt.decode(token, process.env.SECRET);
+      const userId = payload.id;
+      const me = await User.findById(userId)
+      if(!me){
+        return res.status(404).json({ msg: "User not found" });
+    }
+
+    res.status(200).json(me);
+
+    }catch(error){
+      res.status(400).json({ error: err.message });
+    }
+  }
+
   export {
     createUser,
     login,
     getAllUsers,
-    getClients
+    getClients,
+    getMyUser
   }

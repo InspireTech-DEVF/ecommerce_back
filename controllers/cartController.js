@@ -67,7 +67,7 @@ const getCartItems = async (req, res) => {
         const userId = payload.id;
 
         //Buscar los productos que coincidan con el usuario en sesión
-        const items = await Cart.find({ user_id: userId }).populate('item_id');
+        const items = await Cart.find({ user_id: userId, isActive: true }).populate('item_id');
         if (!items || items.length === 0) {
             return res.status(404).json({ msg: 'No cart data found' });
         }
@@ -170,10 +170,11 @@ const deleteItemByIdCart = async (req, res) => {
         const payload = jwt.decode(token, process.env.SECRET);
         const userId = payload.id;
 
-        const item = await Cart.findOneAndDelete({ _id: itemId, user_id: userId });
-        if (!item) {
-            return res.status(404).json({ msg: 'Item not found or unauthorized' });
-        }
+        const item = await Cart.findOneAndUpdate(
+            { _id: itemId, user_id: userId },
+            { isActive: false },
+            { new: true }
+        );
 
         res.status(200).json({ msg: 'Item has been deleted' });
     } catch (error) {
