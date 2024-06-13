@@ -74,7 +74,7 @@ const getCartItems = async (req, res) => {
         const userId = payload.id;
 
         //Buscar los productos que coincidan con el usuario en sesión
-        const items = await Cart.find({ user_id: userId, isOrder:false }).populate('item_id');
+        const items = await Cart.find({ user_id: userId, isActive: true, isOrder:false }).populate('item_id');
         if (!items || items.length === 0) {
             return res.status(404).json({ msg: 'No cart data found' });
         }

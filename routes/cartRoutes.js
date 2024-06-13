@@ -9,7 +9,7 @@ cartRoutes.post('/', isAuth, addItem)
 cartRoutes.get('/', isAuth, getCartItems)
 cartRoutes.patch('/:itemId', isAuth, updateCartItemById)
 cartRoutes.patch('/', isAuth, deleteCart)
-// cartRoutes.delete('/:cartId', isAuth, deleteItemByIdCart) 
+// cartRoutes.patch('/:cartId', isAuth, deleteItemByIdCart) 
 cartRoutes.delete('/', isAuth, deleteCart) // Ruta para limpiar todo el carrito
 cartRoutes.delete('/:itemId', isAuth, deleteItemByIdCart) // Ruta para eliminar un ítem específico del carrito
 cartRoutes.get('/total', isAuth, getCartTotal)
