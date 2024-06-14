@@ -1,5 +1,5 @@
+import { trusted } from 'mongoose';
 import Cart from '../models/Cart.js';
-import User from '../models/User.js';
 import Item from '../models/Item.js';
 import jwt from 'jwt-simple';
 
@@ -8,46 +8,53 @@ const addItem = async (req, res) => {
     try {
         const cartItem = req.body;
 
+        console.log('Received cart item:', cartItem); // Log del ítem recibido
+
         // Validar que los datos estén completos
-        if (!cartItem || !cartItem.item_id || !cartItem.quantity) {
+        if (!cartItem || !cartItem.item_id || !cartItem.quantity || !cartItem.unitPrice) {
             return res.status(400).json({ msg: 'Cart data is incomplete' });
         }
 
-        // Revisar el token en el Header para obtener el usuario del comprador
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(400).json({ message: 'Authorization header is missing' });
-        }
+       const userId = req.user.id;
+       cartItem.user_id = userId;
 
-        const [bearer, token] = authHeader.split(' ');
-        if (bearer !== 'Bearer' || !token) {
-            return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
-        }
-
-        // Decodificar el token para obtener el payload
-        const payload = jwt.decode(token, process.env.SECRET);
-        const userId = payload.id; // Asegúrate de que el token contenga el ID del usuario
-
-        // Asignar el ID del usuario al artículo del carrito
-        cartItem.user_id = userId;
-
-        //ID del producto
-        const item = await Item.findById(cartItem.item_id)
-        if(!item){
+        // Buscar el producto en la base de datos
+        const item = await Item.findById(cartItem.item_id);
+        if (!item) {
             return res.status(404).json({ msg: "Item not found" });
         }
+
+        // Verificar si el artículo ya está en el carrito del usuario
+        const existingCartItem = await Cart.findOne({ user_id: userId, item_id: item._id });
         
-        // Asignar el ID del usuario al artículo del carrito
-        cartItem.item_id = item.item_id
-
-        // Crear el producto en el carrito
-        const newItem = await Cart.create(cartItem);
-        res.status(201).json(newItem);
-
+        if (existingCartItem) {
+            // Si el artículo ya existe, incrementar la cantidad
+            existingCartItem.quantity += cartItem.quantity;
+            await existingCartItem.save();
+            return res.status(200).json(existingCartItem);
+        } else {
+            // Si el artículo no existe, agregarlo al carrito
+            cartItem.item_id = item._id;
+            const newItem = await Cart.create(cartItem);
+            return res.status(201).json(newItem);
+        }
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
+
+
+// PATCH para vaciar el carrito (marcar como inactivo)
+const clearCart = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        await Cart.updateMany({ user_id: userId, isOrder: false }, { isActive: false });
+        res.status(200).json({ msg: 'Cart cleared successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 
 // GET para ver los productos en el carrito
 const getCartItems = async (req, res) => {
@@ -67,13 +74,43 @@ const getCartItems = async (req, res) => {
         const userId = payload.id;
 
         //Buscar los productos que coincidan con el usuario en sesión
-        const items = await Cart.find({ user_id: userId, isActive: true }).populate('item_id');
+        const items = await Cart.find({ user_id: userId, isActive: true, isOrder:false }).populate('item_id');
         if (!items || items.length === 0) {
             return res.status(404).json({ msg: 'No cart data found' });
         }
 
         //Respuesta con los productos con el Id del usuario y el Id del Producto
         res.status(200).json(items);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+//getorder
+const getOrders = async (req, res) => {
+    try {
+        //Validar información del usuario
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            return res.status(400).json({ message: 'Authorization header is missing' });
+        }
+
+        const [bearer, token] = authHeader.split(' ');
+        if (bearer !== 'Bearer' || !token) {
+            return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
+        }
+
+        const payload = jwt.decode(token, process.env.SECRET);
+        const userId = payload.id;
+
+        //Buscar los productos que coincidan con el usuario en sesión
+        const orders = await Cart.find({ user_id: userId, isOrder:true }).populate('item_id');
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ msg: 'No cart data found' });
+        }
+
+        // Respuesta con las órdenes del usuario
+        res.status(200).json(orders);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -152,35 +189,27 @@ const deleteCart = async (req, res) => {
     }
 };
 
-// DELETE o PATCH BY ID para eliminar un producto
 const deleteItemByIdCart = async (req, res) => {
     try {
         const { itemId } = req.params;
 
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(400).json({ message: 'Authorization header is missing' });
+        // Verificar que el ID del artículo esté presente
+        if (!itemId) {
+            return res.status(400).json({ msg: 'Item ID is required' });
         }
 
-        const [bearer, token] = authHeader.split(' ');
-        if (bearer !== 'Bearer' || !token) {
-            return res.status(400).json({ message: 'Authorization header format is Bearer {token}' });
+        // Buscar y eliminar el artículo del carrito
+        const deletedItem = await Cart.findByIdAndDelete(itemId);
+        if (!deletedItem) {
+            return res.status(404).json({ msg: 'Item not found in cart' });
         }
 
-        const payload = jwt.decode(token, process.env.SECRET);
-        const userId = payload.id;
-
-        const item = await Cart.findOneAndUpdate(
-            { _id: itemId, user_id: userId },
-            { isActive: false },
-            { new: true }
-        );
-
-        res.status(200).json({ msg: 'Item has been deleted' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+        res.status(200).json({ msg: 'Item removed from cart successfully' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
     }
 };
+
 
 // GET para obtener la suma total de los productos
 const getCartTotal = async (req, res) => {
@@ -212,11 +241,46 @@ const getCartTotal = async (req, res) => {
     }
 };
 
+
+
+const createOrder = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { firstItemId } = req.params;
+
+        // Obtener el producto del carrito según el ID proporcionado
+        const cartItem = await Cart.findOne({ _id: firstItemId, user_id: userId, isActive: true });
+        if (!cartItem) {
+            return res.status(400).json({ msg: 'No item in cart to update' });
+        }
+
+        // Marcar el item del carrito como parte de una orden
+        await Cart.updateOne({ _id: firstItemId, user_id: userId }, { isOrder: true });
+
+        res.status(200).json({ msg: 'Cart item marked as ordered successfully' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+
+
+
+
+
+
+
+
 export {
     addItem,
     getCartItems,
     updateCartItemById,
     deleteCart,
     deleteItemByIdCart,
-    getCartTotal
+    getCartTotal,
+    clearCart,
+    createOrder,
+    getOrders
+    
 };
+

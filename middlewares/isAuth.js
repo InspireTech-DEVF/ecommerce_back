@@ -4,33 +4,33 @@ const isAuth = (req, res, next) => {
   const authHeader = req.headers.authorization
 
   if (!authHeader) {
-    return res.status(404).json({ message: 'Authorization header is required' })
+    return res.status(403).json({ message: 'Authorization header is required' })
   }
 
-  const [bearer, token] = authHeader.split(' ') // String a Arreglo: ['Bearer', 'token']
+  const [bearer, token] = authHeader.split(' ') 
 
-  if (bearer !== 'Bearer') {
-    return res.status(400).json({ message: 'Authorizacion header format is Bearer {token}' })
-  }
-
-  if (!token) {
-    return res.status(400).json({ message: 'Token is required' })
+  if (bearer !== 'Bearer' || !token) {
+    return res.status(403).json({ message: 'Authorization header format is Bearer {token}' });
   }
 
   try {
-    const payload = jwt.decode(token, process.env.SECRET)
-
-    const now = Math.floor(Date.now() / 1000) // Fecha actual en segundos
+    const payload = jwt.decode(token, process.env.SECRET);
+    
+    const now = Math.floor(Date.now() / 1000); // Fecha actual en segundos
 
     if (payload.exp < now) {
-      return res.status(403).json({ message: 'Token has expired' })
+      return res.status(403).json({ message: 'Token has expired' });
     }
 
-    req.role = payload.role
+    req.user = {
+      id: payload.id,
+      role: payload.role,
+      userName: payload.userName
+    };
 
-    next()
+    next();
   } catch (error) {
-    return res.status(403).json({ message: `Token Error: ${error.message}` })
+    return res.status(403).json({ message: `Token Error: ${error.message}` });
   }
 }
 

@@ -1,6 +1,5 @@
 import Order from "../models/Order.js";
 
-
 // Ruta para crear un Order
 const createOrderRoute = async (req, res) => {
   try {
@@ -42,3 +41,4 @@ const getAllOrdersRoute = async (req, res) => {
 };
 
 export { createOrderRoute, getOrderRoute, getAllOrdersRoute };
+
