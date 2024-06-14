@@ -104,12 +104,12 @@ const getOrders = async (req, res) => {
         const userId = payload.id;
 
         //Buscar los productos que coincidan con el usuario en sesión
-        const orders = await Cart.find({ user_id: userId, isOrder:true });
+        const orders = await Cart.find({ user_id: userId, isOrder:true }).populate('item_id');
         if (!orders || orders.length === 0) {
             return res.status(404).json({ msg: 'No cart data found' });
         }
 
-        //Respuesta con los productos con el Id del usuario y el Id del Producto
+        // Respuesta con las órdenes del usuario
         res.status(200).json(orders);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -262,6 +262,13 @@ const createOrder = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+
+
+
+
+
+
 
 
 export {
